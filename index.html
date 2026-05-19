@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva: Diseño de Circuitos Impresos (PCB)</title>
+    <!-- Tailwind CSS para un diseño profesional y rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons para soporte visual -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sena-green { color: #39A900; }
+        .bg-sena-green { background-color: #39A900; }
+        
+        /* Estilos de accesibilidad para foco */
+        button:focus, a:focus {
+            outline: 3px solid #39A900;
+            outline-offset: 2px;
+        }
+
+        .hidden-section { display: none; }
+        
+        /* Personalización de la barra de progreso */
+        progress::-webkit-progress-bar {
+            background-color: #e5e7eb;
+            border-radius: 10px;
+        }
+        progress::-webkit-progress-value {
+            background-color: #39A900;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 leading-relaxed min-h-screen relative">
+
+    <!-- MARCA DE AGUA PCB EN TODO EL FONDO DE LA PANTALLA (50% de opacidad y posición fija) -->
+    <div class="fixed inset-0 pointer-events-none opacity-50 z-0 overflow-hidden">
+        <img src="Imagenes\PCB.png" class="w-full h-full object-cover" alt="Fondo de Pantalla PCB" onerror="this.src='https://via.placeholder.com/1920x1080/e5e7eb/a1a1aa?text=Dise%C3%B1o+PCB'">
+    </div>
+
+    <!-- Contenedor general con z-10 para asegurar que los elementos queden sobre la marca de agua -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+        
+        <!-- Header / Barra de Progreso y Puntos de Experiencia (Gamificación) -->
+        <header class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200 p-4">
+            <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center justify-between w-full md:w-auto gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 bg-sena-green rounded-lg flex items-center justify-center text-white font-bold">S</div>
+                        <h1 class="text-lg font-semibold uppercase tracking-wider">Diseño de PCBs <span class="text-sena-green">SENA</span></h1>
+                    </div>
+                    <!-- PUNTOS DE EXPERIENCIA (Gamificación Técnica) -->
+                    <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full shadow-sm">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-amber-500 animate-pulse"></i>
+                        <span class="text-xs font-bold text-amber-800 uppercase tracking-wider">Puntaje Global:</span>
+                        <span id="global-xp" class="text-sm font-black text-amber-700">0 XP</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end w-full md:w-64">
+                    <div class="flex justify-between w-full mb-1 text-xs font-bold text-gray-500 uppercase">
+                        <span>Progreso del Aprendiz</span>
+                        <span id="progress-text">10%</span>
+                    </div>
+                    <progress id="main-progress" class="w-full h-2 rounded-full" value="10" max="100"></progress>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto p-4 md:p-8 flex-grow w-full">
+
+            <!-- MICRO 1: EL RETO (Captar atención y recordar conocimientos) -->
+            <section id="micro-1" class="fade-in">
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden relative border border-gray-200">
+                    <!-- Contenido de la Sección -->
+                    <div>
+                        <div class="bg-sena-green p-6 text-white">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i data-lucide="zap" class="w-8 h-8"></i>
+                                <span class="font-bold text-sm uppercase tracking-widest">Micro 1: El Desafío del Día</span>
+                            </div>
+                            <h2 class="text-3xl font-bold">¿Tu prototipo es un nido de cables?</h2>
+                        </div>
+                        <div class="p-8">
+                            <p class="text-lg text-gray-600 mb-6 italic">
+                                "Imagina que has diseñado el sistema de riego automático perfecto para una finca cafetera. Funciona en el protoboard, pero al primer movimiento, un cable se suelta y todo falla. El sector industrial no perdona conexiones inestables."
+                            </p>
+
+                            <!-- Card del Desafío -->
+                            <div class="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-xl mb-6" role="alert">
+                                <h3 class="text-orange-800 font-bold flex items-center gap-2 mb-2">
+                                    <i data-lucide="alert-circle"></i> EL RETO TÉCNICO
+                                </h3>
+                                <p class="text-orange-900">
+                                    Debes convertir un diagrama esquemático de un <strong>Rectificador de Onda Completa</strong> en un diseño de PCB compacto, funcional y libre de cortocircuitos. ¿Estás listo para profesionalizar tus proyectos?
+                                </p>
+                            </div>
+
+                            <!-- COMPONENTE: EVALUACIÓN DIAGNÓSTICA (Sondeo de Saberes Previos) -->
+                            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6" role="region" aria-label="Sondeo de Saberes Previos">
+                                <h3 class="text-blue-800 font-bold flex items-center gap-2 mb-3">
+                                    <i data-lucide="clipboard-check" class="text-blue-600"></i>
+                                    Sondeo Diagnóstico Inicial
+                                </h3>
+                                <p id="diagnostic-question-title" class="text-gray-700 text-sm mb-4 font-semibold">
+                                    En su experiencia técnica o proyectos previos de automatización, ¿cuál considera que es la principal vulnerabilidad física de un prototipo en protoboard bajo condiciones de trabajo real en el campo?
+                                </p>
+                                
+                                <!-- Grupo interactivo de opciones con atributos ARIA -->
+                                <div role="radiogroup" aria-labelledby="diagnostic-question-title" class="space-y-2">
+                                    <button onclick="handleDiagnosticSelection(this, 'a')" class="diag-option w-full text-left p-3 rounded-lg border border-gray-300 hover:border-blue-500 bg-white hover:bg-blue-50 transition-colors text-sm" role="radio" aria-checked="false">
+                                        a) El material plástico del protoboard se degrada con facilidad bajo luz artificial del taller.
+                                    </button>
+                                    <button onclick="handleDiagnosticSelection(this, 'b')" class="diag-option w-full text-left p-3 rounded-lg border border-gray-300 hover:border-blue-500 bg-white hover:bg-blue-50 transition-colors text-sm" role="radio" aria-checked="false">
+                                        b) Los puntos de contacto a presión interna fallan severamente ante la vibración mecánica, la humedad y el polvo ambiental.
+                                    </button>
+                                    <button onclick="handleDiagnosticSelection(this, 'c')" class="diag-option w-full text-left p-3 rounded-lg border border-gray-300 hover:border-blue-500 bg-white hover:bg-blue-50 transition-colors text-sm" role="radio" aria-checked="false">
+                                        c) Los cables de conexión (jumpers) poseen un nivel de impedancia óhmica inestable que altera la Ley de Ohm paulatinamente.
+                                    </button>
+                                </div>
+
+                                <!-- Feedback Neutral de la Evaluación Diagnóstica -->
+                                <div id="diagnostic-feedback" class="hidden mt-4 p-4 rounded-lg bg-blue-100 text-blue-950 border-l-4 border-blue-600 fade-in">
+                                    <p class="font-bold flex items-center gap-1.5 mb-1 text-blue-900">
+                                        <i data-lucide="message-square" class="w-4 h-4"></i> ¡Gracias por participar en este diagnóstico de saberes!
+                                    </p>
+                                    <p class="text-xs leading-relaxed">
+                                        Reconocer estos límites físicos de conexión nos permite entender la importancia de las placas de circuito impreso (PCB). La soldadura fija sobre pistas de cobre y fibra de vidrio (FR-4) elimina los falsos contactos mecánicos por completo. Te invitamos a consultar la documentación técnica a continuación para arrancar con paso firme.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- BOTONES ADICIONALES (Micro 1) -->
+                            <div class="mb-6">
+                                <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Documentación de Consulta:</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <!-- Botón 1: Información del Programa -->
+                                    <button onclick="toggleMicro1Doc('doc-info-programa')" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-sena-green font-medium py-2.5 px-4 rounded-xl transition-all flex items-center gap-2 shadow-sm text-sm">
+                                        <i data-lucide="info" class="w-4 h-4 text-sena-green"></i>
+                                        Información del programa
+                                    </button>
+                                    <!-- Botón 2: Diseño Curricular -->
+                                    <button onclick="toggleMicro1Doc('doc-diseno-curricular')" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-sena-green font-medium py-2.5 px-4 rounded-xl transition-all flex items-center gap-2 shadow-sm text-sm">
+                                        <i data-lucide="file-text" class="w-4 h-4 text-sena-green"></i>
+                                        Diseño Curricular
+                                    </button>
+                                </div>
+
+                                <!-- Panel de Contenedor Dinámico para anexar información -->
+                                <div class="mt-4 space-y-3">
+                                    <!-- Contenido de Información del Programa con PDF Embebido -->
+                                    <div id="doc-info-programa" class="hidden bg-gray-50 border border-gray-200 rounded-xl p-5 fade-in">
+                                        <h4 class="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                                            <i data-lucide="book-open" class="w-5 h-5 text-sena-green"></i> Información del Programa
+                                        </h4>
+                                        <p class="text-gray-600 text-sm mb-4">
+                                            Visualiza a continuación el documento oficial con la información completa de nuestro programa formativo de electrónica:
+                                        </p>
+                                        
+                                        <!-- Contenedor del PDF Embebido -->
+                                        <div class="relative w-full h-[500px] border border-gray-200 rounded-xl overflow-hidden bg-white shadow-inner mb-4">
+                                            <iframe src="Imagenes\Informacion_programa.pdf" class="w-full h-full" title="PDF Información del Programa">
+                                                <!-- Fallback para navegadores que no soportan iframes de PDF -->
+                                                <div class="p-6 text-center h-full flex flex-col justify-center items-center">
+                                                    <i data-lucide="file-warning" class="w-12 h-12 text-gray-400 mb-3"></i>
+                                                    <p class="text-gray-500 font-medium mb-3">Tu dispositivo o navegador no admite la vista previa integrada de archivos PDF.</p>
+                                                    <a href="Imagenes\Informacion_programa.pdf" target="_blank" class="bg-sena-green hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center gap-2 text-sm shadow transition-all">
+                                                        <i data-lucide="external-link" class="w-4 h-4"></i> Abrir PDF en pestaña nueva
+                                                    </a>
+                                                </div>
+                                            </iframe>
+                                        </div>
+                                        
+                                        <!-- Botón de Descarga Directa -->
+                                        <div class="flex justify-end">
+                                            <a href="Imagenes\Informacion_programa.pdf" download="Informacion_programa.pdf" class="bg-sena-green hover:bg-green-700 text-white font-bold py-2.5 px-5 rounded-xl inline-flex items-center gap-2 text-sm shadow transition-all hover:shadow-green-100">
+                                                <i data-lucide="download" class="w-4 h-4"></i> Descargar Información del Programa (PDF)
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contenido de Diseño Curricular con PDF Embebido -->
+                                    <div id="doc-diseno-curricular" class="hidden bg-gray-50 border border-gray-200 rounded-xl p-5 fade-in">
+                                        <h4 class="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                                            <i data-lucide="scroll" class="w-5 h-5 text-sena-green"></i> Diseño Curricular
+                                        </h4>
+                                        <p class="text-gray-600 text-sm mb-4">
+                                            Visualiza a continuación el diseño curricular oficial del programa formativo de electrónica:
+                                        </p>
+
+                                        <!-- Contenedor del PDF Embebido -->
+                                        <div class="relative w-full h-[500px] border border-gray-200 rounded-xl overflow-hidden bg-white shadow-inner mb-4">
+                                            <iframe src="Documentos\Diseño Curricular.pdf" class="w-full h-full" title="PDF Diseño Curricular">
+                                                <!-- Fallback para navegadores que no soportan iframes de PDF -->
+                                                <div class="p-6 text-center h-full flex flex-col justify-center items-center">
+                                                    <i data-lucide="file-warning" class="w-12 h-12 text-gray-400 mb-3"></i>
+                                                    <p class="text-gray-500 font-medium mb-3">Tu dispositivo o navegador no admite la vista previa integrada de archivos PDF.</p>
+                                                    <a href="Documentos\Diseño Curricular.pdf" target="_blank" class="bg-sena-green hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center gap-2 text-sm shadow transition-all">
+                                                        <i data-lucide="external-link" class="w-4 h-4"></i> Abrir PDF en pestaña nueva
+                                                    </a>
+                                                </div>
+                                            </iframe>
+                                        </div>
+
+                                        <!-- Botón de Descarga Directa -->
+                                        <div class="flex justify-end">
+                                            <a href="Documentos\Diseño Curricular.pdf" download="Diseño Curricular.pdf" class="bg-sena-green hover:bg-green-700 text-white font-bold py-2.5 px-5 rounded-xl inline-flex items-center gap-2 text-sm shadow transition-all hover:shadow-green-100">
+                                                <i data-lucide="download" class="w-4 h-4"></i> Descargar Diseño Curricular (PDF)
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-6 mt-6">
+                                <span class="text-sm text-gray-400 font-medium italic">Saberes previos sugeridos: Ley de Ohm y Componentes Básicos.</span>
+                                <button onclick="navigateTo('micro-2', 40)" class="w-full sm:w-auto bg-sena-green hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-green-200">
+                                    Aceptar el Reto <i data-lucide="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MICRO 2: EL CONTENIDO (Objetivos, Teoría segmentada con Evaluación Formativa) -->
+            <section id="micro-2" class="hidden-section fade-in">
+                <div class="mb-6 flex items-center gap-2 text-gray-500">
+                    <button onclick="navigateTo('micro-1', 10)" class="hover:text-sena-green">Micro 1</button>
+                    <i data-lucide="chevron-right" class="w-4"></i>
+                    <span class="font-bold text-sena-green">Micro 2: Teoría Técnica</span>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md p-8 border border-gray-200">
+                    <div>
+                        <div class="mb-8">
+                            <h2 class="text-2xl font-bold mb-2">Objetivo de la Sesión</h2>
+                            <p class="text-gray-600">Al finalizar, serás capaz de identificar las fases del diseño de una PCB y aplicar reglas de ruteado para evitar fallas térmicas y electromagnéticas.</p>
+                        </div>
+
+                        <!-- VIDEO COMPONENT: Implementación del video -->
+                        <div class="mb-10">
+                            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                                <i data-lucide="play-circle" class="text-sena-green"></i> 
+                                Video Tutorial: Proceso de Diseño
+                            </h3>
+                            <div class="bg-black rounded-xl overflow-hidden shadow-2xl aspect-video relative group">
+                                <video class="w-full h-full" controls poster="https://via.placeholder.com/800x450/111827/FFFFFF?text=Diseño+y+elaboración+de+circuitos+impresos">
+                                    <source src="Videos\Curso Diseño y elaboración de circuitos impresos.mp4" type="video/mp4">
+                                    Tu navegador no soporta el elemento de video.
+                                </video>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500 italic text-center">
+                                Curso: Diseño y elaboración de circuitos impresos.mp4
+                            </p>
+                        </div>
+
+                        <!-- ==================== EVALUACIÓN FORMATIVA MICRO 2 ==================== -->
+                        <div class="mb-10 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6" role="region" aria-label="Autoevaluación Formativa de Conceptos Clave">
+                            <h3 class="text-emerald-900 text-xl font-bold flex items-center gap-2 mb-2">
+                                <i data-lucide="badge-help" class="text-sena-green"></i>
+                                Autoevaluación Formativa: Hitos Teóricos
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-6">
+                                Responde estas preguntas basadas en los conceptos del video introductorio para validar tu comprensión teórica antes del ruteado mecánico.
+                            </p>
+
+                            <!-- Zona de anuncios WCAG 4.1.3 (Para tecnologías de asistencia - Invisible visualmente) -->
+                            <div id="micro2-status-announcer" class="sr-only" role="status" aria-live="polite">
+                                Esperando participación en la evaluación formativa.
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Pregunta 1 -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                    <p id="m2-q1-title" class="font-semibold text-gray-800 text-sm mb-3">1. ¿Cuál es el espesor de la capa de cobre estándar en una baquelita o FR-4 comercial?</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2" role="radiogroup" aria-labelledby="m2-q1-title">
+                                        <button onclick="checkMicro2Answer(this, 1, 'a')" class="m2-opt-1 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">a) 10 micras</button>
+                                        <button onclick="checkMicro2Answer(this, 1, 'b')" class="m2-opt-1 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">b) 35 micras (1 oz/ft²)</button>
+                                        <button onclick="checkMicro2Answer(this, 1, 'c')" class="m2-opt-1 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">c) 150 micras</button>
+                                    </div>
+                                    <div id="m2-q1-feedback" class="hidden mt-3 text-xs p-3 rounded-lg fade-in"></div>
+                                </div>
+
+                                <!-- Pregunta 2 -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                    <p id="m2-q2-title" class="font-semibold text-gray-800 text-sm mb-3">2. ¿Cuál es el ángulo de ruteado preferido para señales de alta frecuencia?</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2" role="radiogroup" aria-labelledby="m2-q2-title">
+                                        <button onclick="checkMicro2Answer(this, 2, 'a')" class="m2-opt-2 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">a) Giros rectos de 90°</button>
+                                        <button onclick="checkMicro2Answer(this, 2, 'b')" class="m2-opt-2 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">b) Ángulos obtusos de 135°</button>
+                                        <button onclick="checkMicro2Answer(this, 2, 'c')" class="m2-opt-2 p-3 text-xs text-left border rounded-xl hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">c) Diagonales a 45°</button>
+                                    </div>
+                                    <div id="m2-q2-feedback" class="hidden mt-3 text-xs p-3 rounded-lg fade-in"></div>
+                                </div>
+
+                                <!-- Pregunta 3 -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                    <p id="m2-q3-title" class="font-semibold text-gray-800 text-sm mb-3">3. ¿Qué temperatura máxima se sugiere para acelerar el cloruro férrico de forma segura?</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2" role="radiogroup" aria-labelledby="m2-q3-title">
+                                        <button onclick="checkMicro2Answer(this, 3, 'a')" class="m2-opt-3 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">a) 15°C</button>
+                                        <button onclick="checkMicro2Answer(this, 3, 'b')" class="m2-opt-3 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">b) 45°C máximo</button>
+                                        <button onclick="checkMicro2Answer(this, 3, 'c')" class="m2-opt-3 p-3 text-xs text-left border rounded-xl hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">c) 95°C hirviendo</button>
+                                    </div>
+                                    <div id="m2-q3-feedback" class="hidden mt-3 text-xs p-3 rounded-lg fade-in"></div>
+                                </div>
+                            </div>
+
+                            <!-- PANTALLA DE RESUMEN DIFERIDO PERSONALIZADO (WCAG 4.1.3) -->
+                            <div id="m2-summary-card" class="hidden mt-6 p-5 border border-emerald-300 rounded-xl bg-emerald-100/90 text-emerald-950 fade-in">
+                                <h4 class="font-bold text-base flex items-center gap-2 text-emerald-900 mb-2">
+                                    <i data-lucide="chart-pie"></i>
+                                    Resumen de Desempeño Formativo
+                                </h4>
+                                <div id="m2-summary-details" class="space-y-2 text-xs"></div>
+                            </div>
+                        </div>
+
+                        <!-- Acordeón de Teoría Técnica -->
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <i data-lucide="book-open-check" class="text-sena-green"></i> 
+                            Biblioteca de Conceptos de Ingeniería
+                        </h3>
+                        <div class="space-y-4 mb-6">
+                            <!-- Item 1 -->
+                            <div class="border border-gray-200 rounded-xl overflow-hidden">
+                                <button onclick="toggleAccordion('acc-1')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors" aria-expanded="false" aria-controls="acc-1-content">
+                                    <span class="font-semibold flex items-center gap-3">
+                                        <span class="w-6 h-6 bg-sena-green text-white rounded-full text-xs flex items-center justify-center">1</span>
+                                        El Sustrato y la Lámina de Cobre (Espesores)
+                                    </span>
+                                    <i data-lucide="chevron-down" id="acc-1-icon"></i>
+                                </button>
+                                <div id="acc-1-content" class="hidden p-4 text-gray-600 bg-white border-t border-gray-200">
+                                    <p>La base común es la <strong>FR-4 (Fibra de Vidrio)</strong> o la Fenólica (Baquelita). El grosor estándar de la capa de cobre es de <strong>35 micras (1 oz/ft²)</strong>. ¡Recuerda limpiar muy bien la superficie antes de transferir el diseño!</p>
+                                </div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div class="border border-gray-200 rounded-xl overflow-hidden">
+                                <button onclick="toggleAccordion('acc-2')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <span class="font-semibold flex items-center gap-3">
+                                        <span class="w-6 h-6 bg-sena-green text-white rounded-full text-xs flex items-center justify-center">2</span>
+                                        Reglas de Ruteado (Layout y Ángulos)
+                                    </span>
+                                    <i data-lucide="chevron-down" id="acc-2-icon"></i>
+                                </button>
+                                <div id="acc-2-content" class="hidden p-4 text-gray-600 bg-white border-t border-gray-200">
+                                    <ul class="list-disc ml-5 space-y-2">
+                                        <li><strong>Ángulos:</strong> Evita giros de 90°. Usa <strong>ángulos de 45°</strong> para prevenir el "efecto antena" y facilitar el grabado químico.</li>
+                                        <li><strong>Ancho de Pista:</strong> A mayor corriente, mayor ancho. Para señales pequeñas usa 10-15 mil; para potencia, mínimo 25-40 mil.</li>
+                                        <li><strong>Aislamiento (Clearance):</strong> Espacio mínimo entre pistas para evitar arcos eléctricos.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="border border-gray-200 rounded-xl overflow-hidden">
+                                <button onclick="toggleAccordion('acc-3')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <span class="font-semibold flex items-center gap-3">
+                                        <span class="w-6 h-6 bg-sena-green text-white rounded-full text-xs flex items-center justify-center">3</span>
+                                        El Proceso Químico y Temperatura
+                                    </span>
+                                    <i data-lucide="chevron-down" id="acc-3-icon"></i>
+                                </button>
+                                <div id="acc-3-content" class="hidden p-4 text-gray-600 bg-white border-t border-gray-200">
+                                    <p>Usamos <strong>Cloruro Férrico</strong> o Persulfato de Amonio. El líquido "ataca" el cobre expuesto y respeta el cobre protegido por el tóner o la tinta indeleble.</p>
+                                    <p class="mt-2 text-sm bg-yellow-100 p-2 border-l-4 border-yellow-500 text-yellow-800">
+                                        <strong>Tip Pro:</strong> Calienta ligeramente el ácido para acelerar la reacción (<strong>máx. 45°C</strong>) para evitar que se despegue la máscara protectora de tinta.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-end">
+                            <button onclick="navigateTo('micro-3', 70)" class="bg-sena-green hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full transition-all flex items-center gap-2">
+                                Ir a la Práctica <i data-lucide="mouse-pointer-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MICRO 3: LA APLICACIÓN (Oportunidad de desempeño con Evaluación Sumativa e Hitos Técnicos) -->
+            <section id="micro-3" class="hidden-section fade-in">
+                <div class="mb-6 flex items-center gap-2 text-gray-500">
+                    <button onclick="navigateTo('micro-2', 40)" class="hover:text-sena-green">Micro 2</button>
+                    <i data-lucide="chevron-right" class="w-4"></i>
+                    <span class="font-bold text-sena-green">Micro 3: Aplicación Práctica</span>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md p-8 border border-gray-200">
+                    <div>
+                        <!-- ==================== EVALUACIÓN SUMATIVA INICIAL (MICRO 3) ==================== -->
+                        <div id="m3-sumative-card" class="mb-10 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6" role="region" aria-label="Evaluación Sumativa de Desempeño Técnico">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">Sumativa</span>
+                                <h3 class="text-indigo-950 text-xl font-bold flex items-center gap-2">
+                                    <i data-lucide="shield-check" class="text-blue-600"></i>
+                                    Evaluación Sumativa: Desafíos de Terreno
+                                </h3>
+                            </div>
+                            <p class="text-gray-700 text-sm mb-6 leading-relaxed">
+                                El sistema de riego de la finca cafetera opera bajo condiciones climáticas cambiantes y alta exigencia mecánica. Resuelve los siguientes problemas técnicos basados en la toma de decisiones profesionales para habilitar el simulador de ruteado de pistas.
+                            </p>
+
+                            <!-- Zona de anuncios WCAG 4.1.3 para lector de pantalla -->
+                            <div id="micro3-status-announcer" class="sr-only" role="status" aria-live="polite">
+                                Cargada evaluación sumativa basada en casos del sector productivo.
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Desafío 1 -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                    <span class="text-xs font-bold text-indigo-600 uppercase">Caso 1: Disipación Térmica en Campo</span>
+                                    <p id="m3-s1-title" class="font-semibold text-gray-800 text-sm mt-1 mb-3">
+                                        Durante la prueba piloto de la bomba de agua, el rectificador de onda completa eleva drásticamente su temperatura sobre la PCB debido a la corriente constante. ¿Qué acción técnica en el diseño previene el daño permanente de las pistas?
+                                    </p>
+                                    <div class="grid grid-cols-1 gap-2" role="radiogroup" aria-labelledby="m3-s1-title">
+                                        <button onclick="checkMicro3Answer(this, 1, 'a')" class="m3-opt-1 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            a) Colocar un ventilador externo y rutar pistas sumamente finas para maximizar el flujo de aire debajo de la placa.
+                                        </button>
+                                        <button onclick="checkMicro3Answer(this, 1, 'b')" class="m3-opt-1 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            b) Aumentar el ancho de las pistas de corriente de diodos e integrar un plano de masa amplio que actúe como disipador térmico pasivo.
+                                        </button>
+                                        <button onclick="checkMicro3Answer(this, 1, 'c')" class="m3-opt-1 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            c) Cambiar las pistas de cobre por puentes con cable de red calibre AWG 24 soldado directamente al aire.
+                                        </button>
+                                    </div>
+                                    <div id="m3-s1-feedback" class="hidden mt-3 text-xs p-3 rounded-lg fade-in"></div>
+                                </div>
+
+                                <!-- Desafío 2 -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                    <span class="text-xs font-bold text-indigo-600 uppercase">Caso 2: Aislamiento Eléctrico (Humedad Extrema)</span>
+                                    <p id="m3-s2-title" class="font-semibold text-gray-800 text-sm mt-1 mb-3">
+                                        La humedad promedio en la caseta de riego es del 85%. Para evitar que el agua condense sobre la PCB y genere un cortocircuito entre pistas de alto voltaje, ¿qué parámetro del diseño por software debe definir estrictamente?
+                                    </p>
+                                    <div class="grid grid-cols-1 gap-2" role="radiogroup" aria-labelledby="m3-s2-title">
+                                        <button onclick="checkMicro3Answer(this, 2, 'a')" class="m3-opt-2 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            a) Reducir el aislamiento (clearance) al mínimo para empacar más componentes en un espacio reducido.
+                                        </button>
+                                        <button onclick="checkMicro3Answer(this, 2, 'b')" class="m3-opt-2 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            b) Rutar pistas únicamente paralelas a menos de 5 mils de distancia sin usar laca protectora antisolder.
+                                        </button>
+                                        <button onclick="checkMicro3Answer(this, 2, 'c')" class="m3-opt-2 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            c) Incrementar la distancia de aislamiento (clearance) entre pistas a un mínimo de 30-40 mils y aplicar posteriormente una capa de laca antisolder.
+                                        </button>
+                                    </div>
+                                    <div id="m3-s2-feedback" class="hidden mt-3 text-xs p-3 rounded-lg fade-in"></div>
+                                </div>
+
+                                <!-- Desafío 3 -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                    <span class="text-xs font-bold text-indigo-600 uppercase">Caso 3: Integridad de Señal y Sensores</span>
+                                    <p id="m3-s3-title" class="font-semibold text-gray-800 text-sm mt-1 mb-3">
+                                        El sensor de humedad del café envía una señal analógica ultra sensible. Al diseñar la placa, ¿cómo evita que el ruido de la línea de conmutación del motor (AC) interfiera en la lectura del sensor?
+                                    </p>
+                                    <div class="grid grid-cols-1 gap-2" role="radiogroup" aria-labelledby="m3-s3-title">
+                                        <button onclick="checkMicro3Answer(this, 3, 'a')" class="m3-opt-3 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            a) Separar físicamente la zona de potencia de la zona de señal analógica y usar pistas de tierra de señal independientes (islas).
+                                        </button>
+                                        <button onclick="checkMicro3Answer(this, 3, 'b')" class="m3-opt-3 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            b) Rutar las líneas de control analógicas exactamente por debajo de las bobinas del relé de conmutación.
+                                        </button>
+                                        <button onclick="checkMicro3Answer(this, 3, 'c')" class="m3-opt-3 p-3 text-xs text-left border rounded-lg hover:bg-gray-50 transition-colors bg-white border-gray-200" role="radio" aria-checked="false">
+                                            c) Enlazar el cable del sensor con la pista de tierra de la bomba de agua principal para ahorrar espacio.
+                                        </button>
+                                    </div>
+                                    <div id="m3-s3-feedback" class="hidden mt-3 text-xs p-3 rounded-lg fade-in"></div>
+                                </div>
+                            </div>
+
+                            <!-- PANTALLA DE LOGRO SUMATIVO: HABILITA EL SIMULADOR -->
+                            <div id="m3-sumative-summary" class="hidden mt-6 p-5 border border-indigo-300 rounded-xl bg-indigo-100/90 text-indigo-950 fade-in">
+                                <h4 class="font-bold text-base flex items-center gap-2 text-indigo-900 mb-2">
+                                    <i data-lucide="shield-check"></i>
+                                    Análisis Técnico Terminado: ¡Logro Alcanzado!
+                                </h4>
+                                <p class="text-xs mb-4">
+                                    Has demostrado excelente dominio analítico aplicando normas IPC para resolver el reto productivo de la finca cafetera. ¡Tu diagnóstico de ingeniería está completo! Has ganado <strong>Puntos de Experiencia (XP)</strong> globales. Ahora puedes operar de forma directa el simulador técnico de ruteado.
+                                </p>
+                                <button onclick="unlockRuteadoSimulator()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-5 rounded-lg shadow-md transition-transform hover:scale-105 inline-flex items-center gap-2">
+                                    Desbloquear Simulador de Ruteado <i data-lucide="cpu" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ==================== SIMULADOR DE RUTEADO (INICIALMENTE BLOQUEADO) ==================== -->
+                        <div id="simulator-section-blocker" class="opacity-40 pointer-events-none transition-all duration-500">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                                <i data-lucide="lock" id="sim-lock-icon" class="text-gray-400"></i>
+                                Simulador de Ruteado: El Rectificador
+                            </h2>
+                            <p class="mb-6 text-gray-600">Ayuda al aprendiz técnico a decidir la mejor configuración para su PCB. Selecciona la opción correcta en cada paso para avanzar en el diseño.</p>
+
+                            <div id="simulation-box" class="bg-gray-900 rounded-xl p-6 text-white min-h-[300px] flex flex-col justify-center items-center text-center">
+                                <div id="sim-content">
+                                    <i data-lucide="cpu" class="w-16 h-16 text-sena-green mb-4"></i>
+                                    <h3 class="text-xl font-bold mb-4">Paso 1: Selección de Ángulo</h3>
+                                    <p class="text-gray-400 mb-6 text-sm">¿Cómo deben doblar las pistas de cobre al cambiar de dirección?</p>
+                                    <div class="flex flex-wrap justify-center gap-4">
+                                        <button onclick="simStep(1, false)" class="bg-gray-800 hover:bg-red-900 border border-gray-700 px-6 py-2 rounded-lg transition-colors">Ángulo Recto (90°)</button>
+                                        <button onclick="simStep(1, true)" class="bg-gray-800 hover:bg-green-900 border border-gray-700 px-6 py-2 rounded-lg transition-colors">Ángulo de 45°</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="sim-feedback" class="mt-4 h-8 text-center font-semibold"></div>
+
+                            <div class="mt-12 border-t pt-8">
+                                <h3 class="font-bold text-lg mb-4">Guía de Acción (Paso a Paso en Taller)</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="p-4 bg-blue-50 rounded-lg">
+                                        <span class="block font-bold text-blue-600 mb-1">01. Impresión</span>
+                                        <p class="text-xs text-blue-800">Imprimir en papel propalcote o fotográfico con impresora LÁSER.</p>
+                                    </div>
+                                    <div class="p-4 bg-purple-50 rounded-lg">
+                                        <span class="block font-bold text-purple-600 mb-1">02. Transferencia</span>
+                                        <p class="text-xs text-purple-800">Aplicar calor con plancha (200°C aprox.) por 5 minutos constantes.</p>
+                                    </div>
+                                    <div class="p-4 bg-green-50 rounded-lg">
+                                        <span class="block font-bold text-green-600 mb-1">03. Atacado</span>
+                                        <p class="text-xs text-green-800">Sumergir en Cloruro Férrico en movimiento circular hasta ver el sustrato.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-end">
+                            <button id="btn-to-eval" disabled onclick="navigateTo('micro-4', 90)" class="bg-gray-300 cursor-not-allowed text-white font-bold py-3 px-8 rounded-full transition-all flex items-center gap-2">
+                                Evaluación Final <i data-lucide="award"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MICRO 4: GAMIFICACIÓN Y EVALUACIÓN -->
+            <section id="micro-4" class="hidden-section fade-in">
+                <div class="mb-6 flex items-center gap-2 text-gray-500">
+                    <button onclick="navigateTo('micro-3', 70)" class="hover:text-sena-green">Micro 3</button>
+                    <i data-lucide="chevron-right" class="w-4"></i>
+                    <span class="font-bold text-sena-green">Micro 4: Evaluación y Logro</span>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md p-8 border border-gray-200">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="text-2xl font-bold">Validación de Competencia</h2>
+                                <p class="text-gray-600">Responde estas 3 preguntas para obtener tu insignia.</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-bold text-gray-400">PUNTAJE</span>
+                                <div id="score-display" class="text-3xl font-black text-sena-green">00</div>
+                            </div>
+                        </div>
+
+                        <div id="quiz-container" class="space-y-8">
+                            <!-- Pregunta 1 -->
+                            <div class="quiz-item">
+                                <p class="font-semibold mb-4 text-lg">1. ¿Qué material es el más utilizado industrialmente como sustrato para PCBs de alta calidad?</p>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <button onclick="checkAnswer(this, 1, 'a')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">a) Madera terciada con laca</button>
+                                    <button onclick="checkAnswer(this, 1, 'b')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">b) Fibra de Vidrio (FR-4)</button>
+                                    <button onclick="checkAnswer(this, 1, 'c')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">c) Plástico PVC reciclado</button>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 2 -->
+                            <div class="quiz-item">
+                                <p class="font-semibold mb-4 text-lg">2. ¿Por qué se deben evitar los ángulos de 90° en las pistas?</p>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <button onclick="checkAnswer(this, 2, 'a')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">a) Por estética visual solamente</button>
+                                    <button onclick="checkAnswer(this, 2, 'b')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">b) Porque el cobre pesa más en las esquinas</button>
+                                    <button onclick="checkAnswer(this, 2, 'c')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">c) Para reducir ruido electromagnético y facilitar el grabado</button>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 3 -->
+                            <div class="quiz-item">
+                                <p class="font-semibold mb-4 text-lg">3. Si vas a diseñar una pista para una fuente de poder de 3 Amperios, ¿qué deberías hacer?</p>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <button onclick="checkAnswer(this, 3, 'a')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">a) Usar una pista muy delgada para que pase rápido</button>
+                                    <button onclick="checkAnswer(this, 3, 'b')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">b) Incrementar considerablemente el ancho de la pista</button>
+                                    <button onclick="checkAnswer(this, 3, 'c')" class="option-btn text-left p-4 border rounded-xl hover:bg-gray-50 transition-colors border-gray-200 bg-white">c) Pintar la pista de rojo para mejorar la conductividad</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="final-actions" class="hidden mt-12 text-center fade-in">
+                            <div class="inline-block p-1 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full mb-4">
+                                <div class="bg-white rounded-full p-4">
+                                     <i data-lucide="award" class="w-16 h-16 text-orange-500"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-2">¡Competencia Alcanzada!</h3>
+                            <p class="text-gray-600 mb-6">Has demostrado dominio técnico en los fundamentos de diseño de PCBs.</p>
+                            <button onclick="showBadge()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-transform hover:scale-105">
+                                Reclamar Insignia Digital
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="max-w-4xl mx-auto p-8 text-center text-gray-500 text-sm w-full mt-auto">
+            <p class="bg-white/85 py-2 px-4 rounded-full inline-block shadow-sm">© 2024 SENA - Red de Electrónica y Automatización</p>
+            <p class="mt-2 italic font-medium text-gray-600 drop-shadow-sm">Basado en el modelo de los 9 momentos de Gagné.</p>
+        </footer>
+    </div>
+
+    <!-- Modal de Insignia -->
+    <div id="badge-modal" class="fixed inset-0 bg-black bg-opacity-80 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-8 text-center shadow-2xl transform transition-all scale-110">
+            <div class="relative mb-6">
+                <div class="absolute inset-0 bg-sena-green opacity-20 blur-2xl rounded-full"></div>
+                <img src="https://cdn-icons-png.flaticon.com/512/10411/10411782.png" alt="Insignia de Competencia" class="relative w-48 mx-auto" onerror="this.src='https://via.placeholder.com/200?text=PCB+Expert'">
+            </div>
+            <h2 class="text-2xl font-black text-gray-800 mb-2 italic uppercase">Experto en PCB</h2>
+            <p class="text-sena-green font-bold mb-6">SENA - Formación Profesional</p>
+            <div class="bg-gray-100 p-4 rounded-xl mb-6 text-sm text-gray-500">
+                Otorgado por completar con éxito la Guía Interactiva de Diseño y Elaboración de Circuitos Impresos.
+            </div>
+            <button onclick="closeBadge()" class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-colors">Cerrar y Finalizar</button>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DE ESTADO Y NAVEGACIÓN ---
+        let globalXP = 0; // Puntos de Experiencia globales (Gamificación)
+        let currentScore = 0;
+        let answersCorrect = 0;
+        const totalQuestions = 3;
+
+        // Estado interno para la evaluación formativa de Micro 2
+        let m2Answers = { 1: null, 2: null, 3: null };
+        const m2Correct = { 1: 'b', 2: 'c', 3: 'b' };
+        const m2FeedbackTexts = {
+            1: {
+                correct: "¡Correcto! El espesor estándar en electrónica general es de 35 micras (1 onza de cobre por pie cuadrado). Ofrece el balance ideal para señales y corriente moderada.",
+                incorrect: "Incorrecto. Recuerda que el sustrato FR-4 estándar de la industria utiliza 35 micras (1 oz/ft²) como norma de manufactura. Por favor, revisa la pestaña 'El Sustrato y la Lámina de Cobre'."
+            },
+            2: {
+                correct: "¡Excelente! Los ángulos de 45° eliminan los giros rectos de 90° que actúan como inductores/antenas reflejando la señal, además previenen roturas en el proceso químico.",
+                incorrect: "Incorrecto. Los giros a 90° provocan desadaptaciones de impedancia y fallas de fabricación. El diseño óptimo requiere giros a 45°. Revisa el apartado 'Reglas de Ruteado'."
+            },
+            3: {
+                correct: "¡Correcto! Trabajar el cloruro férrico a una temperatura de entre 40°C y 45°C acelera la reacción de grabado sin debilitar la goma de la película de tóner.",
+                incorrect: "Incorrecto. Calentar demasiado el ácido (ej: 95°C) dañaría la emulsión protectora y arruinaría las pistas. Se recomienda un máximo de 45°C. Revisa 'El Proceso Químico'."
+            }
+        };
+
+        // Estado interno para la evaluación sumativa de Micro 3
+        let m3Answers = { 1: null, 2: null, 3: null };
+        const m3Correct = { 1: 'b', 2: 'c', 3: 'a' };
+        const m3FeedbackTexts = {
+            1: {
+                correct: "¡Fabulosa decisión técnica! Aumentar el grosor/ancho de las pistas incrementa la capacidad de conducción de corriente ($I^2R$), mientras que un plano de masa disipa el calor eficientemente en campo.",
+                incorrect: "Decisión ineficaz. Reducir el ancho incrementa la resistencia de la pista calentándola más hasta fundirla. Se requiere mayor grosor y planos de cobre sólidos."
+            },
+            2: {
+                correct: "¡Impecable! Un aislamiento generoso (clearance) reduce la posibilidad de ionización de aire por humedad, y la laca antisolder funciona como un escudo dieléctrico hidrófugo de alto nivel.",
+                incorrect: "Decisión peligrosa. El clearance bajo en presencia de humedad genera arcos galvánicos destructivos que carbonizan el sustrato de fibra FR-4."
+            },
+            3: {
+                correct: "¡Perfecto! El aislamiento físico (routing partition) combinado con planos de tierra analógicos aislados (star-grounding) evita el acoplamiento capacitivo e inductivo del motor AC al sensor.",
+                incorrect: "Falla de diseño. Mezclar la referencia de tierra de un motor ruidoso con la del sensor analógico inunda la entrada del microcontrolador de picos de ruido dañinos."
+            }
+        };
+
+        /**
+         * Actualiza el contador global de XP (Gamificación técnica)
+         * @param {number} points - Puntos a añadir
+         */
+        function addXP(points) {
+            globalXP += points;
+            document.getElementById('global-xp').innerText = `${globalXP} XP`;
+        }
+
+        /**
+         * Maneja la navegación Single Page App
+         * @param {string} sectionId - ID de la sección a mostrar
+         * @param {number} progress - Valor de 0 a 100 para la barra
+         */
+        function navigateTo(sectionId, progress) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden-section'));
+            // Mostrar la elegida
+            document.getElementById(sectionId).classList.remove('hidden-section');
+            
+            // Actualizar progreso
+            const progressBar = document.getElementById('main-progress');
+            const progressText = document.getElementById('progress-text');
+            progressBar.value = progress;
+            progressText.innerText = `${progress}%`;
+            
+            // Scroll al top
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            lucide.createIcons();
+        }
+
+        /**
+         * Maneja la selección del sondeo diagnóstico inicial en el Micro 1
+         * @param {HTMLElement} btn - Botón presionado
+         * @param {string} option - Letra de la opción elegida
+         */
+        function handleDiagnosticSelection(btn, option) {
+            // Deshabilitar todas las opciones diagnósticas para evitar respuestas múltiples
+            const buttons = document.querySelectorAll('.diag-option');
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-50', 'cursor-not-allowed');
+                b.setAttribute('aria-checked', 'false');
+            });
+
+            // Resaltar la opción seleccionada con colores de validación neutral
+            btn.classList.remove('opacity-50');
+            btn.classList.add('bg-blue-50', 'border-blue-500', 'ring-2', 'ring-blue-300');
+            btn.setAttribute('aria-checked', 'true');
+
+            // Revelar el contenedor de retroalimentación neutral
+            document.getElementById('diagnostic-feedback').classList.remove('hidden');
+            
+            // Otorga 10 XP por completar el autodiagnóstico
+            addXP(10);
+            lucide.createIcons();
+        }
+
+        /**
+         * Maneja la evaluación formativa del Micro 2
+         * @param {HTMLElement} btn - Botón presionado
+         * @param {number} questionIndex - Índice de la pregunta (1-3)
+         * @param {string} option - Letra de la opción elegida ('a', 'b', 'c')
+         */
+        function checkMicro2Answer(btn, questionIndex, option) {
+            const announcer = document.getElementById('micro2-status-announcer');
+            
+            // Registrar respuesta
+            m2Answers[questionIndex] = option;
+
+            // Deshabilitar botones de esta pregunta
+            const groupButtons = document.querySelectorAll(`.m2-opt-${questionIndex}`);
+            groupButtons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-50', 'cursor-not-allowed');
+                b.setAttribute('aria-checked', 'false');
+            });
+
+            btn.classList.remove('opacity-50');
+            btn.setAttribute('aria-checked', 'true');
+
+            const isCorrect = option === m2Correct[questionIndex];
+            const targetFeedback = document.getElementById(`m2-q${questionIndex}-feedback`);
+
+            // Configurar diseño de feedback inmediato (Acierto/Error con icono y color)
+            if (isCorrect) {
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'ring-2', 'ring-green-300');
+                targetFeedback.className = "mt-3 text-xs p-3 rounded-lg fade-in bg-green-50 text-green-900 border-l-4 border-green-500 flex items-start gap-2";
+                targetFeedback.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 mt-0.5 shrink-0 text-green-600"></i> <span>${m2FeedbackTexts[questionIndex].correct}</span>`;
+                announcer.innerText = `Respuesta ${questionIndex} enviada correctamente. ¡Es acierto!`;
+                addXP(10); // +10 XP por acierto formativo
+            } else {
+                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800', 'ring-2', 'ring-red-300');
+                targetFeedback.className = "mt-3 text-xs p-3 rounded-lg fade-in bg-red-50 text-red-900 border-l-4 border-red-500 flex items-start gap-2";
+                targetFeedback.innerHTML = `<i data-lucide="x-circle" class="w-4 h-4 mt-0.5 shrink-0 text-red-600"></i> <span>${m2FeedbackTexts[questionIndex].incorrect}</span>`;
+                announcer.innerText = `Respuesta ${questionIndex} enviada correctamente. Requiere refuerzo.`;
+            }
+
+            targetFeedback.classList.remove('hidden');
+            lucide.createIcons();
+
+            // Verificar si todas las preguntas del Micro 2 están completadas para procesar el Resumen Diferido (WCAG 4.1.3)
+            if (m2Answers[1] && m2Answers[2] && m2Answers[3]) {
+                processMicro2DeferredSummary();
+            }
+        }
+
+        /**
+         * Procesa el resumen de desempeño formativo del Micro 2 al final del bloque (Retroalimentación diferida)
+         */
+        function processMicro2DeferredSummary() {
+            const announcer = document.getElementById('micro2-status-announcer');
+            announcer.innerText = "Procesando resultados generales de la autoevaluación formativa...";
+            
+            setTimeout(() => {
+                const summaryCard = document.getElementById('m2-summary-card');
+                const summaryDetails = document.getElementById('m2-summary-details');
+                
+                let correctCount = 0;
+                let recommendations = [];
+
+                // Validar respuestas
+                for (let i = 1; i <= 3; i++) {
+                    if (m2Answers[i] === m2Correct[i]) {
+                        correctCount++;
+                    } else {
+                        // Mapear el material que falló el aprendiz
+                        if (i === 1) recommendations.push("<strong>Tema 1: El Sustrato y la Lámina de Cobre</strong> - Te sugerimos volver a leer la sección para consolidar el grosor estándar del cobre en micras.");
+                        if (i === 2) recommendations.push("<strong>Tema 2: Reglas de Ruteado (Layout)</strong> - Te sugerimos repasar el material de ángulos de ruteado para asimilar por qué evitamos curvas cerradas.");
+                        if (i === 3) recommendations.push("<strong>Tema 3: El Proceso Químico</strong> - Te sugerimos revisar las anotaciones de temperatura óptima del cloruro férrico para no degradar las máscaras protectoras.");
+                    }
+                }
+
+                let summaryHtml = "";
+                if (correctCount === 3) {
+                    summaryHtml = `
+                        <div class="flex items-center gap-3 bg-emerald-50 text-emerald-950 p-4 rounded-lg border border-emerald-300">
+                            <i data-lucide="sparkles" class="w-8 h-8 text-yellow-500 shrink-0"></i>
+                            <div>
+                                <p class="font-bold">¡Excelente logro, Aprendiz! (Puntaje: 3/3)</p>
+                                <p class="text-xs">Has superado satisfactoriamente toda la autoevaluación teórica. Tu mente está programada con las reglas ideales de ruteado y grabado químico. ¡Puedes avanzar al Micro 3 con total seguridad!</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    summaryHtml = `
+                        <div class="space-y-3">
+                            <p class="font-semibold text-emerald-900">Has acertado <strong>${correctCount} de 3</strong> preguntas.</p>
+                            <p class="text-xs text-gray-700">Para asegurar un excelente desempeño en el simulador del Micro 3 y evitar cortocircuitos en el taller, te recomendamos encarecidamente repasar las siguientes secciones del acordeón inferior:</p>
+                            <ul class="list-disc pl-5 space-y-2 text-xs text-gray-800">
+                                ${recommendations.map(r => `<li>${r}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                summaryDetails.innerHTML = summaryHtml;
+                summaryCard.classList.remove('hidden');
+                
+                // Anunciar el resultado a lectores de pantalla (Criterio 4.1.3)
+                announcer.innerText = `Evaluación formativa completada. Calificación final: ${correctCount} de 3 respuestas correctas. Recomendaciones y resumen listos para consultar en pantalla.`;
+                
+                lucide.createIcons();
+            }, 800);
+        }
+
+        /**
+         * Maneja la autoevaluación sumativa del Micro 3 (Casos de Terreno)
+         * @param {HTMLElement} btn - Botón seleccionado
+         * @param {number} challengeIndex - Índice del desafío (1-3)
+         * @param {string} option - Opción seleccionada ('a', 'b', 'c')
+         */
+        function checkMicro3Answer(btn, challengeIndex, option) {
+            const announcer = document.getElementById('micro3-status-announcer');
+            m3Answers[challengeIndex] = option;
+
+            // Deshabilitar los demás botones del desafío
+            const groupButtons = document.querySelectorAll(`.m3-opt-${challengeIndex}`);
+            groupButtons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-50', 'cursor-not-allowed');
+                b.setAttribute('aria-checked', 'false');
+            });
+
+            btn.classList.remove('opacity-50');
+            btn.setAttribute('aria-checked', 'true');
+
+            const isCorrect = option === m3Correct[challengeIndex];
+            const targetFeedback = document.getElementById(`m3-s${challengeIndex}-feedback`);
+
+            if (isCorrect) {
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'ring-2', 'ring-green-300');
+                targetFeedback.className = "mt-3 text-xs p-3 rounded-lg fade-in bg-green-50 text-green-900 border-l-4 border-green-500 flex items-start gap-2";
+                targetFeedback.innerHTML = `<i data-lucide="check" class="w-4 h-4 mt-0.5 shrink-0 text-green-600"></i> <span>${m3FeedbackTexts[challengeIndex].correct}</span>`;
+                announcer.innerText = `Desafío sumativo ${challengeIndex} superado. ¡Excelente decisión ingenieril!`;
+                addXP(10); // +10 XP por decisión sumativa acertada
+            } else {
+                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800', 'ring-2', 'ring-red-300');
+                targetFeedback.className = "mt-3 text-xs p-3 rounded-lg fade-in bg-red-50 text-red-900 border-l-4 border-red-500 flex items-start gap-2";
+                targetFeedback.innerHTML = `<i data-lucide="x" class="w-4 h-4 mt-0.5 shrink-0 text-red-600"></i> <span>${m3FeedbackTexts[challengeIndex].incorrect}</span>`;
+                announcer.innerText = `Desafío sumativo ${challengeIndex} requiere análisis. Respuesta incorrecta registrada.`;
+            }
+
+            targetFeedback.classList.remove('hidden');
+            lucide.createIcons();
+
+            // Si todos los casos fueron respondidos, revelamos el habilitador del simulador
+            if (m3Answers[1] && m3Answers[2] && m3Answers[3]) {
+                document.getElementById('m3-sumative-summary').classList.remove('hidden');
+                announcer.innerText = "Evaluación sumativa de campo terminada. Resumen general disponible en pantalla. Puede proceder a desbloquear el simulador de ruteado.";
+            }
+        }
+
+        /**
+         * Desbloquea de forma interactiva el simulador de ruteado tras superar la sumativa
+         */
+        function unlockRuteadoSimulator() {
+            const block = document.getElementById('simulator-section-blocker');
+            const icon = document.getElementById('sim-lock-icon');
+            const announcer = document.getElementById('micro3-status-announcer');
+
+            block.classList.remove('opacity-40', 'pointer-events-none');
+            icon.setAttribute('data-lucide', 'unlock');
+            icon.classList.remove('text-gray-400');
+            icon.classList.add('text-sena-green');
+            
+            announcer.innerText = "Simulador de ruteado desbloqueado correctamente. Ahora puede interactuar con el simulador.";
+            addXP(20); // +20 XP por liberar el laboratorio virtual
+            
+            // Ocultar botón sumativo para evitar clicks extra
+            document.getElementById('m3-sumative-summary').classList.add('hidden');
+            
+            lucide.createIcons();
+        }
+
+        /**
+         * Muestra/Oculta los paneles de documentación del Micro 1
+         * @param {string} docId - ID del contenedor de documentación a abrir/cerrar
+         */
+        function toggleMicro1Doc(docId) {
+            const docElement = document.getElementById(docId);
+            const isHidden = docElement.classList.contains('hidden');
+            
+            // Ocultar otros paneles de documentación del Micro 1 primero
+            const docs = ['doc-info-programa', 'doc-diseno-curricular'];
+            docs.forEach(id => {
+                if(id !== docId) {
+                    document.getElementById(id).classList.add('hidden');
+                }
+            });
+
+            // Toggle del panel seleccionado
+            if (isHidden) {
+                docElement.classList.remove('hidden');
+            } else {
+                docElement.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        // --- LÓGICA MICRO 2: ACORDEÓN ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(`${id}-content`);
+            const icon = document.getElementById(`${id}-icon`);
+            const isHidden = content.classList.contains('hidden');
+            
+            content.classList.toggle('hidden');
+            icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        // --- LÓGICA MICRO 3: SIMULACIÓN ---
+        function simStep(step, isCorrect) {
+            const feedback = document.getElementById('sim-feedback');
+            const content = document.getElementById('sim-content');
+
+            if (isCorrect) {
+                feedback.innerHTML = `<span class="text-green-500">¡Correcto! Los ángulos de 45° reducen la interferencia.</span>`;
+                content.innerHTML = `
+                    <i data-lucide="check-circle" class="w-16 h-16 text-sena-green mb-4"></i>
+                    <h3 class="text-xl font-bold mb-4">Paso 2: Ancho de Pista</h3>
+                    <p class="text-gray-400 mb-6 text-sm">La corriente de alimentación es de 2 Amperios. ¿Cuál es el ancho ideal?</p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button onclick="simFinish(false)" class="bg-gray-800 hover:bg-red-900 border border-gray-700 px-6 py-2 rounded-lg">10 mils (Delgada)</button>
+                        <button onclick="simFinish(true)" class="bg-gray-800 hover:bg-green-900 border border-gray-700 px-6 py-2 rounded-lg">40 mils (Ancha)</button>
+                    </div>
+                `;
+                addXP(10);
+            } else {
+                feedback.innerHTML = `<span class="text-red-400">¡Ups! Los ángulos de 90° causan problemas en altas frecuencias. Reintenta.</span>`;
+            }
+            lucide.createIcons();
+        }
+
+        function simFinish(isCorrect) {
+            const feedback = document.getElementById('sim-feedback');
+            const btn = document.getElementById('btn-to-eval');
+            if (isCorrect) {
+                feedback.innerHTML = `<span class="text-green-500">¡Excelente! Diseño optimizado para potencia.</span>`;
+                btn.disabled = false;
+                btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                btn.classList.add('bg-sena-green', 'hover:bg-green-700');
+                addXP(20); // Bono por completar el simulador práctico
+            } else {
+                feedback.innerHTML = `<span class="text-red-400">Pista demasiado delgada: ¡Se fundiría por calor! Prueba de nuevo.</span>`;
+            }
+        }
+
+        // --- LÓGICA MICRO 4: EVALUACIÓN ---
+        function checkAnswer(btn, questionNum, choice) {
+            const parent = btn.parentElement;
+            const buttons = parent.querySelectorAll('button');
+            
+            // Respuestas correctas
+            const correctOnes = { 1: 'b', 2: 'c', 3: 'b' };
+            
+            // Deshabilitar otros botones de esta pregunta
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-50');
+                b.setAttribute('aria-checked', 'false');
+            });
+
+            if (choice === correctOnes[questionNum]) {
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                btn.classList.remove('opacity-50');
+                btn.setAttribute('aria-checked', 'true');
+                answersCorrect++;
+                updateScore(Math.round((answersCorrect / totalQuestions) * 100));
+                addXP(15); // +15 XP por respuesta correcta final
+            } else {
+                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                btn.classList.remove('opacity-50');
+                btn.setAttribute('aria-checked', 'true');
+            }
+
+            // Si es la última pregunta, mostrar acciones finales
+            if (document.querySelectorAll('.quiz-item button:disabled').length === (totalQuestions * 3)) {
+                document.getElementById('final-actions').classList.remove('hidden');
+                document.getElementById('main-progress').value = 100;
+                document.getElementById('progress-text').innerText = "100%";
+            }
+        }
+
+        function updateScore(val) {
+            currentScore = val;
+            document.getElementById('score-display').innerText = currentScore.toString().padStart(2, '0');
+        }
+
+        // Modal para Insignias
+        function showBadge() {
+            if (answersCorrect >= 2) {
+                document.getElementById('badge-modal').classList.remove('hidden');
+            } else {
+                alert("Debes tener al menos 2 respuestas correctas para certificar esta competencia. ¡Refresca y reintenta!");
+            }
+        }
+
+        function closeBadge() {
+            document.getElementById('badge-modal').classList.add('hidden');
+            alert(`¡Felicidades Aprendiz! Has terminado la guía con éxito acumulando un total de ${globalXP} XP.`);
+        }
+
+        // Inicialización
+        window.onload = () => {
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
